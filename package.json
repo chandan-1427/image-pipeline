@@ -1,0 +1,11 @@
+{
+  "name": "image-pipeline",
+  "private": true,
+  "scripts": {
+    "proto:gen": "buf generate"
+  },
+  "devDependencies": {
+    "@bufbuild/buf": "^1.50.0",
+    "typescript": "^5.5.0"
+  }
+}
