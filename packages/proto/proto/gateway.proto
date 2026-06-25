@@ -1,0 +1,13 @@
+syntax = "proto3";
+package gateway;
+
+import "worker.proto";
+
+message AssignBatchRequest {
+  string batch_id = 1;
+  repeated worker.ConvertImageRequest images = 2;
+}
+
+service WorkerGatewayService {
+  rpc AssignBatch(AssignBatchRequest) returns (stream worker.ProgressEvent);
+}

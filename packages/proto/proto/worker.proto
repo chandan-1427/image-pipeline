@@ -1,0 +1,39 @@
+syntax = "proto3";
+package worker;
+
+enum ImageFormat {
+  jpg = 0;
+  jpeg = 1;
+  png = 2;
+  webp = 3;
+  gif = 4;
+  bmp = 5;
+}
+
+enum ImageRunStatus {
+  QUEUED = 0;
+  DOWNLOADING = 1;
+  CONVERTING = 2;
+  UPLOADING = 3;
+  DONE = 4;
+  FAILED = 5;
+}
+
+message ConvertImageRequest {
+  string image_run_id = 1;
+  string source_path = 2;
+  ImageFormat source_format = 3;
+  ImageFormat target_format = 4;
+}
+
+message ProgressEvent {
+  string image_run_id = 1;
+  ImageRunStatus status = 2;
+  int32 progress_percent = 3;
+  optional string error = 4;
+  optional string result_path = 5;
+}
+
+service WorkerService {
+  rpc ConvertImage(ConvertImageRequest) returns (stream ProgressEvent);
+}

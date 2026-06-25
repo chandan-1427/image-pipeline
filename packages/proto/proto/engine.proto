@@ -1,0 +1,13 @@
+syntax = "proto3";
+package engine;
+
+import "worker.proto";
+
+message ConvertBatchRequest {
+  string batch_id = 1;
+  repeated worker.ConvertImageRequest images = 2;
+}
+
+service EngineService {
+  rpc ConvertBatch(ConvertBatchRequest) returns (stream worker.ProgressEvent);
+}
