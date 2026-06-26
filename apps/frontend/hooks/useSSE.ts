@@ -31,6 +31,17 @@ export function useSSE(
       es.close();
     };
 
+    es.onmessage = (e) => {
+      const event: SSEEvent = JSON.parse(e.data);
+      console.log("SSE event:", event); // add this
+      if (event.type === "DONE" || event.status === "BATCH_DONE") {
+        onDone();
+        es.close();
+        return;
+      }
+      onEvent(event);
+    };
+
     return () => {
       es.close();
     };

@@ -24,25 +24,27 @@ export default function Home() {
     });
   };
 
-  const handleSSEEvent = (event: SSEEvent) => {
-    setBatch((prev) => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        imageRuns: prev.imageRuns.map((run) =>
-          run.imageRunId === event.imageRunId
-            ? {
-                ...run,
-                status: event.status as ImageRunStatus,
-                progressPercent: event.progressPercent,
-                resultPath: event.resultPath ?? run.resultPath,
-                error: event.error ?? run.error,
-              }
-            : run
-        ),
-      };
-    });
-  };
+const handleSSEEvent = (event: SSEEvent) => {
+  setBatch((prev) => {
+    if (!prev) return prev;
+    return {
+      ...prev,
+      imageRuns: prev.imageRuns.map((run) => {
+        // once terminal, ignore further events
+        if (run.status === "DONE" || run.status === "FAILED") return run;
+        if (run.imageRunId !== event.imageRunId) return run;
+
+        return {
+          ...run,
+          status: event.status as ImageRunStatus,
+          progressPercent: event.progressPercent,
+          resultPath: event.resultPath ?? run.resultPath,
+          error: event.error ?? run.error,
+        };
+      }),
+    };
+  });
+};
 
   const handleDone = () => {
     setBatch((prev) => (prev ? { ...prev, completed: true } : prev));

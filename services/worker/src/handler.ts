@@ -44,6 +44,8 @@ export async function convertImageHandler(
     // DONE
     send(ImageRunStatus.DONE, 100, { resultPath: resultUrl });
 
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     call.end();
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
